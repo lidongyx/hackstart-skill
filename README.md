@@ -23,6 +23,9 @@ Codex 的 `$skill-installer` 从 GitHub 安装。
 - path: skills/imagegen-gateway
 ```
 
+如果默认下载方式遇到 TLS 或本机 CA 证书错误，让 `$skill-installer` 使用
+`method=git` 重试；不要关闭证书校验。
+
 安装后新建 Codex 任务，直接输入：
 
 ```text

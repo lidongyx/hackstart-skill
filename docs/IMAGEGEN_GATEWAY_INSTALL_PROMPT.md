@@ -18,7 +18,7 @@
 - Skill path: skills/imagegen-gateway
 
 要求：
-1. 使用 Codex 官方的 $skill-installer 安装 skill。调用安装器时明确传递 repo=lidongyx/hackstart-skill、ref=main、path=skills/imagegen-gateway。目标为当前用户的 $CODEX_HOME/skills/imagegen-gateway；如果 CODEX_HOME 未设置，则使用 ~/.codex/skills/imagegen-gateway。
+1. 使用 Codex 官方的 $skill-installer 安装 skill。调用安装器时明确传递 repo=lidongyx/hackstart-skill、ref=main、path=skills/imagegen-gateway。目标为当前用户的 $CODEX_HOME/skills/imagegen-gateway；如果 CODEX_HOME 未设置，则使用 ~/.codex/skills/imagegen-gateway。如果默认 download/auto 方法因为 TLS、CA 证书或 ZIP 下载失败，立即使用同一个官方安装器并指定 method=git 重试，不要关闭证书校验。
 2. 如果目标不存在，正常安装。如果已经存在，不要删除其中的 .venv，不要覆盖任何凭据；从来源下载最新版，只更新 SKILL.md、agents/、scripts/ 和 .gitignore 这些由 skill 管理的文件。
 3. 不得读取后回显、记录或复制 API Key。不得把 ~/.codex/config.toml、~/.codex/auth.json、环境变量或 provider 认证命令产生的 token 内容显示在回答、日志、命令参数、临时文件或仓库中。
 4. 检查 Python 3.11 或更高版本。依次尝试 python3、python、Windows 的 py -3，以及 Codex Desktop 提供的 bundled workspace Python。选择第一个满足版本要求的解释器。
