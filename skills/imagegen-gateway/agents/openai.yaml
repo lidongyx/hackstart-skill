@@ -1,0 +1,7 @@
+interface:
+  display_name: "HackStart Image Generation"
+  short_description: "Generate images through the active HackStart provider"
+  default_prompt: "Use $imagegen-gateway to generate the requested image through my active HackStart provider."
+
+policy:
+  allow_implicit_invocation: true
