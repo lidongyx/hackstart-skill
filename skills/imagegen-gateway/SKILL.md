@@ -1,14 +1,32 @@
 ---
 name: imagegen-gateway
-description: "Generate or edit raster images through the user's active HackStart Codex provider. Use as the default image route when the built-in image tool is unavailable or the user's configured gateway should handle image generation."
+description: "Generate or edit raster images through the user's active HackStart provider, defaulting to gpt-image-2.5-flare. Use when the user asks for an image and wants the configured third-party image API used without handling credentials manually."
 ---
 
 # HackStart Image Generation Gateway
 
-Use the user's active Codex provider and the official bundled `imagegen` CLI. Installing
-this skill is standing authorization to use that provider's API/CLI path for requested
-image generation and editing; do not stop solely because the built-in `image_gen` tool
-is unavailable.
+Use the user's active Codex provider and the official bundled image CLI. The default
+model is `gpt-image-2.5-flare`; keep explicit user model overrides. Never display,
+copy, or log API credentials.
+
+## Simple use
+
+For an ordinary request such as “生成一张赛博朋克城市夜景”, call the gateway directly
+and save the image to a sensible output path. Do not ask the user to provide API keys or
+CLI flags unless the request needs them. The shortest CLI form is:
+
+```bash
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/imagegen-gateway/scripts/imagegen_gateway.py" \
+  quick "生成一张赛博朋克城市夜景"
+```
+
+`quick` uses `gpt-image-2.5-flare` and overwrites the default output file. For a custom
+path or advanced options, use the underlying commands:
+
+```bash
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/imagegen-gateway/scripts/imagegen_gateway.py" \
+  generate --prompt "<prompt>" --out "<output path>"
+```
 
 ## First use and repair
 
@@ -23,7 +41,8 @@ Setup reads the active provider from the user's local Codex configuration, creat
 isolated runtime, installs the OpenAI SDK, performs a zero-cost model-list check, and
 adds an idempotent global preference for this skill. It never prints the credential.
 
-If setup has already run, generate directly:
+If setup has already run, generate directly. The gateway injects
+`--model gpt-image-2.5-flare` when no `--model` is supplied:
 
 ```bash
 python3 "${CODEX_HOME:-$HOME/.codex}/skills/imagegen-gateway/scripts/imagegen_gateway.py" \
@@ -31,9 +50,8 @@ python3 "${CODEX_HOME:-$HOME/.codex}/skills/imagegen-gateway/scripts/imagegen_ga
 ```
 
 The launcher accepts the official CLI's `generate`, `edit`, and `generate-batch`
-arguments unchanged. It automatically repairs a missing or outdated isolated runtime
-before a paid request. Follow the official `imagegen` skill for prompt shaping, model
-parameters, output paths, and visual inspection.
+arguments unchanged and automatically repairs a missing or outdated isolated runtime
+before a paid request. Use `--model` to override the default when needed.
 
 ## Diagnostics
 
@@ -53,4 +71,5 @@ Credential resolution order is:
 Never copy credentials into prompts, repositories, command arguments, output files, or
 status messages. Report only provider name, normalized base URL, credential source,
 runtime state, reachable image model IDs, and sanitized error type/status. Online doctor
-checks list models and do not generate an image or incur image-generation charges.
+checks list models and do not generate an image or incur image-generation charges. Setup
+requires `gpt-image-2.5-flare` to be available.

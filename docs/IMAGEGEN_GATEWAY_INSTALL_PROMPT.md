@@ -2,10 +2,9 @@
 
 将下面“安装指令”中的全部内容复制到一个新的 Codex 任务中发送。Codex 会自动安装
 `$imagegen-gateway`、读取你已经配置好的 HackStart provider、准备隔离的 Python
-环境，并执行不计费的连通性检查。
+环境，并执行不计费的连通性检查。安装后默认使用 `gpt-image-2.5-flare` 生图。
 
-安装过程不会要求你粘贴 API Key，也不会执行真实生图。不要把自己的 API Key 添加到
-这份 Markdown 中。
+安装过程不会要求你粘贴 API Key，也不会执行真实生图。不要把自己的 API Key 添加到这份 Markdown 中。
 
 ## 安装指令
 
@@ -29,10 +28,10 @@
    - 将 provider base_url 规范化为 OpenAI Images API 的 /v1 地址；
    - 创建 skill 私有的跨平台 .venv；
    - 安装或升级兼容的 OpenAI Python SDK；
-   - 通过模型列表检查确认 gpt-image-2 可用；
-   - 在 ~/.codex/AGENTS.md 中以受管理、可重复执行的区块设置 $imagegen-gateway 为默认生图路线。
+   - 通过模型列表检查确认 gpt-image-2.5-flare 可用；
+   - 在 ~/.codex/AGENTS.md 中以受管理、可重复执行的区块设置 $imagegen-gateway 为默认生图路线，并说明默认模型是 gpt-image-2.5-flare。
 7. 如果 setup 失败，运行 scripts/imagegen_gateway.py doctor --repair，并根据其输出修复 Python、venv、SDK、provider、鉴权或网络问题。最多重复修复和检查两次；仍失败就停止，给我明确的失败项目和下一步，不要尝试真实生图。
-8. 验收必须满足：doctor=ok、online_check=ok，并且 image_models 中包含 gpt-image-2。安装期间不要调用 images.generate，不要生成测试图片，避免产生费用。
+8. 验收必须满足：doctor=ok、online_check=ok，并且 image_models 中包含 gpt-image-2.5-flare。安装期间不要调用 images.generate，不要生成测试图片，避免产生费用。
 9. 完成后只报告：安装目录、Python 版本、OpenAI SDK 版本、provider 名称、规范化后的 base URL、可用图片模型，以及是否需要新建任务或重启 Codex。不要报告任何密钥内容。
 10. 如果 skill 在当前任务中尚未出现在技能列表，说明这是任务启动时的技能发现缓存；完成安装和验收后告诉我新建一个 Codex 任务，或在仍未出现时重启 Codex。
 ```
@@ -49,6 +48,21 @@
 
 ```text
 使用 $imagegen-gateway 生成一张万里长城的科幻海报
+```
+
+## 精简安装提示词
+
+```text
+请用 $skill-installer 安装并配置 GitHub 仓库 lidongyx/hackstart-skill 中的 skill：
+skills/imagegen-gateway@main。安装后运行 setup/doctor 完成零计费验收，默认模型必须是
+gpt-image-2.5-flare。直接读取本机 Codex 配置中的 API 地址和凭据，不要显示、复制或询问
+API Key；完成后只报告安装目录、运行时版本、provider、可用图片模型和是否需要重启 Codex。
+```
+
+## 精简调用提示词
+
+```text
+使用 $imagegen-gateway 生成一张<描述你的图片>
 ```
 
 需要排查环境时输入：

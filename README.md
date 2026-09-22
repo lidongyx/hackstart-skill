@@ -7,7 +7,7 @@ Codex 的 `$skill-installer` 从 GitHub 安装。
 
 | Skill | 用途 | 安装提示词 |
 | --- | --- | --- |
-| `imagegen-gateway` | 通过用户当前配置的 HackStart provider 调用官方图片 CLI，自动准备环境并进行零计费诊断 | [打开安装文档](docs/IMAGEGEN_GATEWAY_INSTALL_PROMPT.md) |
+| `imagegen-gateway` | 通过用户当前配置的 HackStart provider 调用官方图片 CLI，默认使用 `gpt-image-2.5-flare`，自动准备环境并进行零计费诊断 | [打开安装文档](docs/IMAGEGEN_GATEWAY_INSTALL_PROMPT.md) |
 
 ## 推荐安装方式
 
@@ -31,6 +31,14 @@ Codex 的 `$skill-installer` 从 GitHub 安装。
 ```text
 生成一张万里长城的科幻海报
 ```
+
+也可以显式指定 skill：
+
+```text
+使用 $imagegen-gateway 生成一张万里长城的科幻海报
+```
+
+skill 默认使用 `gpt-image-2.5-flare`，无需在提示词中写模型名。
 
 ## 安全边界
 

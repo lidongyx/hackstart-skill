@@ -19,12 +19,16 @@ from urllib.parse import urlsplit, urlunsplit
 
 OPENAI_REQUIREMENT = "openai>=2.9,<4"
 MIN_OPENAI_VERSION = (2, 9)
+DEFAULT_IMAGE_MODEL = "gpt-image-2.5-flare"
+IMAGE_COMMANDS = {"generate", "generate-batch", "edit"}
 MANAGED_START = "<!-- imagegen-gateway:managed-start -->"
 MANAGED_END = "<!-- imagegen-gateway:managed-end -->"
 MANAGED_GUIDANCE = f"""{MANAGED_START}
 ## HackStart image generation
 
 - For raster image generation or editing, use `$imagegen-gateway` as the default execution route. The user has authorized it to use the active local Codex provider. Do not stop solely because the built-in `image_gen` tool is unavailable.
+- Use `{DEFAULT_IMAGE_MODEL}` by default. A user-provided model override always wins.
+- For a simple request such as "生成一张科幻海报", invoke the skill directly and do not ask for CLI flags unless they are needed.
 {MANAGED_END}"""
 
 
@@ -296,8 +300,8 @@ def online_check() -> None:
 
     print("online_check=ok")
     print("image_models=" + (",".join(models) if models else "none"))
-    if "gpt-image-2" not in models:
-        fail("gpt-image-2 is not available to the active provider credential")
+    if DEFAULT_IMAGE_MODEL not in models:
+        fail(f"{DEFAULT_IMAGE_MODEL} is not available to the active provider credential")
 
 
 def run_online_check(python: Path, gateway: GatewayConfig) -> None:
@@ -371,6 +375,26 @@ def parse_diagnostic_flags(args: list[str]) -> tuple[bool, bool]:
     return "--repair" in args, "--offline" not in args
 
 
+def prepare_image_command(args: list[str]) -> list[str]:
+    """Add the default model while preserving explicit CLI overrides."""
+    if not args:
+        fail("missing command; use setup, doctor, quick, generate, edit, or generate-batch")
+
+    if args[0] == "quick":
+        if len(args) < 2 or not args[1].strip():
+            fail('quick requires a prompt, for example: quick "a watercolor mountain village"')
+        args = ["generate", "--prompt", args[1], *args[2:]]
+        if "--force" not in args:
+            args.append("--force")
+
+    has_model_override = any(
+        arg == "--model" or arg.startswith("--model=") for arg in args[1:]
+    )
+    if args[0] in IMAGE_COMMANDS and not has_model_override:
+        return [args[0], "--model", DEFAULT_IMAGE_MODEL, *args[1:]]
+    return args
+
+
 def main() -> None:
     args = sys.argv[1:]
     if not args:
@@ -393,6 +417,7 @@ def main() -> None:
         setup(online="--offline" not in args, set_default="--no-default" not in args)
         return
 
+    args = prepare_image_command(args)
     home = codex_home()
     gateway = resolve_configuration(home)
     cli = official_cli(home)

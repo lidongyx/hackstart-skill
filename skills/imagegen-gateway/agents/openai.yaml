@@ -1,7 +1,7 @@
 interface:
   display_name: "HackStart Image Generation"
-  short_description: "Generate images through the active HackStart provider"
-  default_prompt: "Use $imagegen-gateway to generate the requested image through my active HackStart provider."
+  short_description: "Generate images with GPT Image 2.5 Flare"
+  default_prompt: "Use $imagegen-gateway to generate the requested image with gpt-image-2.5-flare through my active HackStart provider. Read local configuration for authentication and do not ask me to paste an API key."
 
 policy:
   allow_implicit_invocation: true
